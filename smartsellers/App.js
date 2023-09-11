@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   Text,
@@ -163,6 +163,41 @@ const Inputting = ({ texto, outroTexto }) => {
   )
 };
 
+const EditarProduto = ({ route, navigation }) => {
+  const { produto } = route.params; // Obtém os detalhes do produto da navegação
+
+  const { atualizarProduto } = useProduto();
+
+  const [novoNome, setNovoNome] = useState(produto.nome);
+  const [novaDescricao, setNovaDescricao] = useState(produto.descricao);
+
+  return (
+    <View style={{ flex: 1, backgroundColor: '#00284D', padding: 20 }}>
+      <Text style={{ color: 'white', fontSize: 20, marginBottom: 10 }}>Editar Produto</Text>
+      <TextInput
+        placeholder="Nome do Produto"
+        placeholderTextColor="white"
+        style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 10 }}
+        onChangeText={(text) => setNovoNome(text)}
+        value={novoNome}
+      />
+      <TextInput
+        placeholder="Descrição do Produto"
+        placeholderTextColor="white"
+        style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 20 }}
+        onChangeText={(text) => setNovaDescricao(text)}
+        value={novaDescricao}
+      />
+      <TouchableOpacity
+        style={{ backgroundColor: '#04192C', padding: 15, borderRadius: 10 }}
+        onPress={atualizarProduto}
+      >
+        <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Pronto</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
 const Formulario = ({navigation}) => {
 
   const {adicionarProduto} = useProduto();
@@ -298,9 +333,13 @@ const Formulario = ({navigation}) => {
   )
 }
 
-const Listagem = () => {
+const Listagem = ({navigation}) => {
   
-  const { produtos } = useProduto()
+  const { produtos, removerProduto } = useProduto()
+
+  const editarProduto = (produto) => {
+    navigation.navigate('EditarProduto', { produto });
+  };
 
   return(
     <View style={{ flex: 1 }}>
@@ -322,36 +361,27 @@ const Listagem = () => {
               marginTop: 30
             }}>
            
-           {produtos.map((produto, index) => (
-            <Inputting
-              key={index}
-              texto={`${produto.nome}`}
-              outroTexto={`${produto.descricao}`}
-            />
-          ))}
-
-
-            <TouchableOpacity
-              style={{
-                backgroundColor: '#04192C',
-                width: '100%',
-                padding: 15,
-                alignSelf: 'center',
-                borderRadius: 10,
-                marginBottom: 50
-              }}
-              
-              >
-              <Text
-                style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontWeight: 600,
-                  fontSize: 20,
-                }}>
-                Pronto!
+           {produtos.length === 0 ? (
+              <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
+                Não há produtos cadastrados.
               </Text>
-            </TouchableOpacity>
+            ) : (
+              produtos.map((produto, index) => (
+                <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Inputting
+                    texto={`Produto: ${produto.nome}`}
+                    outroTexto={`Descrição: ${produto.descricao}`}
+                  />
+                  <TouchableOpacity onPress={() => removerProduto(index)} style={{ height: "100%" }}>
+                    <Icon name="trash" size={24} color="red" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => editarProduto(produto)}>
+                    <Icon name="pencil" size={24} color="blue" />
+                  </TouchableOpacity>
+                </View>
+              ))
+            )}
+
           </View>
         </View>
     </View>
@@ -363,60 +393,77 @@ export default function App() {
   return (
     <ProdutoProvider>
         <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{
-            title: 'SmartSellers',
-            headerStyle: {
-              backgroundColor: '#025A90',
-              height: 150
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontSize: 30,
-              fontWeight: 700
-            },
-            headerTitleAlign: 'center'
-          }}
-        />
-        <Stack.Screen
-          name="Formulario"
-          component={Formulario}
-          options={{
-            title: 'Produto',
-            headerStyle: {
-              backgroundColor: '#025A90',
-              height: 150
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontSize: 30,
-              fontWeight: 700
-            },
-            headerTitleAlign: 'center'
-          }}
-        />
-        <Stack.Screen
-          name="Listagem"
-          component={Listagem}
-          options={{
-            title: 'Produtos',
-            headerStyle: {
-              backgroundColor: '#025A90',
-              height: 150
-            },
-            headerTintColor: '#fff',
-            headerTitleStyle: {
-              fontSize: 30,
-              fontWeight: 700
-            },
-            headerTitleAlign: 'center'
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-    </ProdutoProvider>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="Home"
+              component={Home}
+              options={{
+                title: 'SmartSellers',
+                headerStyle: {
+                  backgroundColor: '#025A90',
+                  height: 150
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontSize: 30,
+                  fontWeight: 700
+                },
+                headerTitleAlign: 'center'
+              }}
+            />
+            <Stack.Screen
+              name="Formulario"
+              component={Formulario}
+              options={{
+                title: 'Produto',
+                headerStyle: {
+                  backgroundColor: '#025A90',
+                  height: 150
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontSize: 30,
+                  fontWeight: 700
+                },
+                headerTitleAlign: 'center'
+              }}
+            />
+            <Stack.Screen
+              name="Listagem"
+              component={Listagem}
+              options={{
+                title: 'Produtos',
+                headerStyle: {
+                  backgroundColor: '#025A90',
+                  height: 150
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontSize: 30,
+                  fontWeight: 700
+                },
+                headerTitleAlign: 'center'
+              }}
+            />
+            <Stack.Screen
+              name="EditarProduto"
+              component={EditarProduto}
+              options={{
+                title: 'Editar',
+                headerStyle: {
+                  backgroundColor: '#025A90',
+                  height: 150
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                  fontSize: 30,
+                  fontWeight: 700
+                },
+                headerTitleAlign: 'center'
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+        </ProdutoProvider>
   );
 }
