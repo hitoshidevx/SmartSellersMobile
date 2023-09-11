@@ -17,7 +17,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios'
 import banner from './assets/bannerChatbot.jpg'
 import chatbotImage from './assets/chatbotCelular.png'
-
+import { useProduto } from './ProdutoContext';
+import { ProdutoProvider } from './ProdutoContext';
 
 const Stack = createStackNavigator();
 
@@ -121,53 +122,58 @@ const Home = ({ navigation }) => {
   );
 }
 
-const Inputting = ({ texto }) => {
-  const [pergunta, setPergunta] = useState("");
+const Inputting = ({ texto, outroTexto }) => {
 
-
-  return (
-    <View style={{ flex: 1, marginBottom: 150 }}>
-      <View
-        style={{
-          backgroundColor: "#025A90",
-          padding: 20,
-          borderTopLeftRadius: 10,
-          borderTopRightRadius: 10,
-        }}
-      >
-        <Text
-          style={{
-            color: "white",
-            fontSize: 20,
-            textAlign: "center",
-            fontWeight: 600,
-          }}
-        >
-          {texto}
-        </Text>
-      </View>
-      <TextInput
-        placeholder="Digite aqui..."
-        placeholderTextColor="white"
-        style={{
-          backgroundColor: "#04192C",
-          color: "white",
-          padding: 20,
-          textAlign: "center",
-          borderBottomRightRadius: 10,
-          borderBottomLeftRadius: 10,
-        }}
-        onChangeText={(text) => setPergunta(text)}
-        value={pergunta}
-      />
-    </View>
-  );
+  return(
+    <View style={{ flex: 1}}>
+                  <View
+                    style={{
+                      backgroundColor: "#025A90",
+                      padding: 20,
+                      borderTopLeftRadius: 10,
+                      borderTopRightRadius: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 20,
+                        textAlign: "center",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {texto}
+                    </Text>
+                  </View>
+                  <Text
+                    placeholder="Digite aqui..."
+                    placeholderTextColor="white"
+                    style={{
+                      backgroundColor: "#04192C",
+                      color: "white",
+                      padding: 20,
+                      textAlign: "center",
+                      borderBottomRightRadius: 10,
+                      borderBottomLeftRadius: 10,
+                    }}
+                  >
+                    {outroTexto}
+                  </Text>
+                </View>
+  )
 };
 
-const Formulario = () => {
+const Formulario = ({navigation}) => {
+
+  const {adicionarProduto} = useProduto();
 
   const [nomeProduto, setNomeProduto] = useState("")
   const [descricaoProduto, setDescricaoProduto] = useState("")
+
+  const handleProntoPress = () => {
+    adicionarProduto(nomeProduto, descricaoProduto);
+    navigation.navigate('Listagem');
+  };
 
   return(
     <View style={{ flex: 1 }}>
@@ -273,6 +279,67 @@ const Formulario = () => {
                 borderRadius: 10,
                 marginBottom: 50
               }}
+              onPress={handleProntoPress}
+              
+              >
+              <Text
+                style={{
+                  color: 'white',
+                  textAlign: 'center',
+                  fontWeight: 600,
+                  fontSize: 20,
+                }}>
+                Pronto!
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+    </View>
+  )
+}
+
+const Listagem = () => {
+  
+  const { produtos } = useProduto()
+
+  return(
+    <View style={{ flex: 1 }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: '#00284D',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#00284D',
+              justifyContent: 'space-around',
+              width: "100%",
+              height: "100%",
+              padding: 50,
+              marginTop: 30
+            }}>
+           
+           {produtos.map((produto, index) => (
+            <Inputting
+              key={index}
+              texto={`${produto.nome}`}
+              outroTexto={`${produto.descricao}`}
+            />
+          ))}
+
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#04192C',
+                width: '100%',
+                padding: 15,
+                alignSelf: 'center',
+                borderRadius: 10,
+                marginBottom: 50
+              }}
               
               >
               <Text
@@ -292,10 +359,10 @@ const Formulario = () => {
 }
 
 
-
 export default function App() {
   return (
-    <NavigationContainer>
+    <ProdutoProvider>
+        <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
           name="Home"
@@ -331,7 +398,25 @@ export default function App() {
             headerTitleAlign: 'center'
           }}
         />
+        <Stack.Screen
+          name="Listagem"
+          component={Listagem}
+          options={{
+            title: 'Produtos',
+            headerStyle: {
+              backgroundColor: '#025A90',
+              height: 150
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontSize: 30,
+              fontWeight: 700
+            },
+            headerTitleAlign: 'center'
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
+    </ProdutoProvider>
   );
 }
