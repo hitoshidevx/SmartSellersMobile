@@ -4,7 +4,6 @@ const ProdutoContext = createContext();
 
 export const ProdutoProvider = ({ children }) => {
   const [produtos, setProdutos] = useState([]);
-  const { produto } = route.params;
   
   const adicionarProduto = (nome, descricao) => {
     setProdutos([...produtos, { nome, descricao }]);
@@ -16,22 +15,13 @@ export const ProdutoProvider = ({ children }) => {
     setProdutos(novaListaProdutos);
   };
 
-  const atualizarProduto = () => {
-    // Crie um novo array de produtos com o produto atualizado
-    const produtosAtualizados = [...produtos]
-    produtosAtualizados.map((p) => {
-      if (p === produto) {
-        return { ...p, nome: novoNome, descricao: novaDescricao };
-      }
-      return p;
-    });
-
-    // Atualize a lista de produtos no contexto
+  const atualizarProduto = (produtoAtualizado) => {
+    const produtosAtualizados = produtos.map((produto) =>
+      produto.id === produtoAtualizado.id ? produtoAtualizado : produto
+    );
     setProdutos(produtosAtualizados);
-
-    // Navegue de volta para a tela de listagem
-    navigation.navigate('Listagem');
   };
+
   return (
     <ProdutoContext.Provider value={{ produtos, adicionarProduto, removerProduto, atualizarProduto }}>
       {children}

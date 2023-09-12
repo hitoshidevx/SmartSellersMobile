@@ -164,12 +164,17 @@ const Inputting = ({ texto, outroTexto }) => {
 };
 
 const EditarProduto = ({ route, navigation }) => {
-  const { produto } = route.params; // Obtém os detalhes do produto da navegação
 
+  const { produto, onSave } = route.params;
   const { atualizarProduto } = useProduto();
-
   const [novoNome, setNovoNome] = useState(produto.nome);
   const [novaDescricao, setNovaDescricao] = useState(produto.descricao);
+
+  const handleSalvarPress = () => {
+    const produtoAtualizado = { ...produto, nome: novoNome, descricao: novaDescricao };
+    atualizarProduto(produtoAtualizado);
+    navigation.navigate('Listagem'); // Volta para a lista após salvar
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#00284D', padding: 20 }}>
@@ -190,7 +195,7 @@ const EditarProduto = ({ route, navigation }) => {
       />
       <TouchableOpacity
         style={{ backgroundColor: '#04192C', padding: 15, borderRadius: 10 }}
-        onPress={atualizarProduto}
+        onPress={handleSalvarPress}
       >
         <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Pronto</Text>
       </TouchableOpacity>
@@ -338,8 +343,20 @@ const Listagem = ({navigation}) => {
   const { produtos, removerProduto } = useProduto()
 
   const editarProduto = (produto) => {
-    navigation.navigate('EditarProduto', { produto });
+    navigation.navigate('EditarProduto', { produto, onSave: atualizarProduto });
   };
+
+  // Função para atualizar o produto após a edição
+  const atualizarProduto = (produtoAtualizado) => {
+    const produtosAtualizados = produtos.map((p) => {
+      if (p.id === produtoAtualizado.id) {
+        return produtoAtualizado;
+      }
+      return p;
+    });
+    setProdutos(produtosAtualizados);
+  };
+
 
   return(
     <View style={{ flex: 1 }}>
