@@ -19,6 +19,8 @@ import banner from './assets/bannerChatbot.jpg'
 import chatbotImage from './assets/chatbotCelular.png'
 import { useSmartContext } from './SmartSellersContext';
 import { SmartSellersProvider } from './SmartSellersContext';
+import { SmartContexto } from './contexto/context';
+import { useSmartControl } from './control/useSmartControl';
 
 const Stack = createStackNavigator();
 
@@ -27,39 +29,39 @@ const Home = ({ navigation }) => {
 
   const estilos = StyleSheet.create({
 
-    textoBanner:{
+    textoBanner: {
       color: 'white',
       fontWeight: 500,
       fontSize: 30,
       marginLeft: 20,
-  },
-  
-    botao:{
+    },
+
+    botao: {
       backgroundColor: '#04192C',
       width: 150,
       height: 40,
       marginLeft: 20,
       marginTop: 20,
       borderRadius: 15,
-  },
-  
-    textoBotao:{
+    },
+
+    textoBotao: {
       color: 'white',
       textAlign: 'center',
       fontSize: 15,
       fontWeight: 500,
       marginTop: 7,
-  },
+    },
 
-    nomeEmpresa:{
+    nomeEmpresa: {
       color: 'white',
       fontSize: 20,
       fontWeight: 500,
       marginTop: 10,
       textAlign: 'left'
-  },
+    },
 
-    textoPrincipal:{
+    textoPrincipal: {
       color: 'white',
       fontWeight: 400,
       width: 200,
@@ -75,12 +77,12 @@ const Home = ({ navigation }) => {
 
   })
   return (
-    <View style = {{flex: 1}}>
+    <View style={{ flex: 1 }}>
 
       <View style={{ flex: 5 }}>
         <ImageBackground
           source={banner}
-          style={{ height: '100%' , width: '100%' }}>
+          style={{ height: '100%', width: '100%' }}>
           <View style={{ marginTop: 60 }}>
             <Text style={estilos.textoBanner}>
               Rápido.
@@ -122,9 +124,9 @@ const Home = ({ navigation }) => {
           flexDirection: 'row'
         }}>
         <Text style={estilos.textoPrincipal}>
-          O chatbot que vai <Text style = {{color: 'orange'}}>elevar</Text> a jornada do consumidor ao próximo nível!
+          O chatbot que vai <Text style={{ color: 'orange' }}>elevar</Text> a jornada do consumidor ao próximo nível!
         </Text>
-        <Image style={{width: '30%', height: '40%'}} source={chatbotImage} />
+        <Image style={{ width: '30%', height: '40%' }} source={chatbotImage} />
       </View>
     </View>
   );
@@ -132,319 +134,385 @@ const Home = ({ navigation }) => {
 
 const Inputting = ({ texto, outroTexto }) => {
 
-  return(
-    <View style={{ flex: 1}}>
-                  <View
-                    style={{
-                      backgroundColor: "#025A90",
-                      padding: 20,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {texto}
-                    </Text>
-                  </View>
-                  <Text
-                    placeholder="Digite aqui..."
-                    placeholderTextColor="white"
-                    style={{
-                      backgroundColor: "#04192C",
-                      color: "white",
-                      padding: 20,
-                      textAlign: "center",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                  >
-                    {outroTexto}
-                  </Text>
-                </View>
+  return (
+    <View style={{ flex: 1 }}>
+      <View
+        style={{
+          backgroundColor: "#025A90",
+          padding: 20,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+        }}
+      >
+        <Text
+          style={{
+            color: "white",
+            fontSize: 20,
+            textAlign: "center",
+            fontWeight: 600,
+          }}
+        >
+          {texto}
+        </Text>
+      </View>
+      <Text
+        placeholder="Digite aqui..."
+        placeholderTextColor="white"
+        style={{
+          backgroundColor: "#04192C",
+          color: "white",
+          padding: 20,
+          textAlign: "center",
+          borderBottomRightRadius: 10,
+          borderBottomLeftRadius: 10,
+        }}
+      >
+        {outroTexto}
+      </Text>
+    </View>
   )
 };
 
 
-const FormularioProduto = ({navigation}) => {
+const FormularioProduto = ({ navigation }) => {
 
-  const {adicionarProduto} = useSmartContext();
+  const { adicionarProduto } = useSmartContext();
 
   const [nomeProduto, setNomeProduto] = useState("")
   const [descricaoProduto, setDescricaoProduto] = useState("")
+  const [precoProduto, setPrecoProduto] = useState(0)
 
-  const handleProntoPress = () => {
-    adicionarProduto(nomeProduto, descricaoProduto);
-    navigation.navigate('ListagemProduto');
-  };
+  const [nomeProdutoErro, setNomeProdutoErro] = useState("")
+  const [descricaoProdutoErro, setDescricaoProdutoErro] = useState("")
+  const [precoProdutoErro, setPrecoProdutoErro] = useState("")
 
-  return(
+  const { salvarProduto } = useContext(SmartContexto)
+
+  return (
     <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#00284D',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: '#00284D',
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: "100%",
+            height: "100%",
+            padding: 50,
+            marginTop: 30
           }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00284D',
-              justifyContent: 'space-around',
-              width: "100%",
-              height: "100%",
-              padding: 50,
-              marginTop: 30
-            }}>
-
-            
-            <View style={{ flex: 1}}>
-                  <View
-                    style={{
-                      backgroundColor: "#025A90",
-                      padding: 20,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Digite o nome do seu produto
-                    </Text>
-                  </View>
-                  <TextInput
-                    placeholder="Digite aqui..."
-                    placeholderTextColor="white"
-                    style={{
-                      backgroundColor: "#04192C",
-                      color: "white",
-                      padding: 20,
-                      textAlign: "center",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                    onChangeText={(text) => setNomeProduto(text)}
-                    value={nomeProduto}
-                  />
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <View
-                    style={{
-                      backgroundColor: "#025A90",
-                      padding: 20,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Descreva o seu produto
-                    </Text>
-                  </View>
-                  <TextInput
-                    placeholder="Digite aqui..."
-                    placeholderTextColor="white"
-                    style={{
-                      backgroundColor: "#04192C",
-                      color: "white",
-                      padding: 20,
-                      textAlign: "center",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                    onChangeText={(text) => setDescricaoProduto(text)}
-                    value={descricaoProduto}
-                  />
-                </View>
-           
 
 
-            <TouchableOpacity
+          <View style={{ flex: 1 }}>
+            <View
               style={{
-                backgroundColor: '#04192C',
-                width: '100%',
-                padding: 15,
-                alignSelf: 'center',
-                borderRadius: 10,
-                marginBottom: 50
+                backgroundColor: "#025A90",
+                padding: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}
-              onPress={handleProntoPress}
-              
-              >
+            >
               <Text
                 style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontWeight: 600,
+                  color: "white",
                   fontSize: 20,
-                }}>
-                Pronto!
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                Digite o nome do seu produto
               </Text>
-            </TouchableOpacity>
+            </View>
+            <TextInput
+              placeholder="Digite aqui..."
+              placeholderTextColor="white"
+              style={{
+                backgroundColor: "#04192C",
+                color: "white",
+                padding: 20,
+                textAlign: "center",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+              onChangeText={(text) => setNomeProduto(text)}
+              value={nomeProduto}
+            />
           </View>
+
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                backgroundColor: "#025A90",
+                padding: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                Descreva o seu produto
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Digite aqui..."
+              placeholderTextColor="white"
+              style={{
+                backgroundColor: "#04192C",
+                color: "white",
+                padding: 20,
+                textAlign: "center",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+              onChangeText={(text) => setDescricaoProduto(text)}
+              value={descricaoProduto}
+            />
+          </View>
+
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                backgroundColor: "#025A90",
+                padding: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                Insira o preço do produto
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Digite aqui..."
+              placeholderTextColor="white"
+              style={{
+                backgroundColor: "#04192C",
+                color: "white",
+                padding: 20,
+                textAlign: "center",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+              onChangeText={(text) => setPrecoProduto(text)}
+              value={precoProduto}
+            />
+          </View>
+
+
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#04192C',
+              width: '100%',
+              padding: 15,
+              alignSelf: 'center',
+              borderRadius: 10,
+              marginBottom: 50
+            }}
+            onPress={() => {
+              salvarProduto({nomeProduto, descricaoProduto, precoProduto})
+              .then(() => {})
+              .catch((errors) => {
+                errors.inner.forEach(e => {
+                  console.log(e.message, e.path)
+                  if (e.path === "nomeProduto") { 
+                    setNomeProdutoErro(e.message)
+                  } else if (e.path === "descricaoProduto") { 
+                    setDescricaoProdutoErro(e.message)
+                  } else if (e.path === "precoProduto") { 
+                    setPrecoProdutoErro(e.message)
+                  } 
+                });
+              })
+            }}
+
+          >
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: 600,
+                fontSize: 20,
+              }}>
+              Pronto!
+            </Text>
+          </TouchableOpacity>
         </View>
+      </View>
     </View>
   )
 }
 
-const FormularioEmpresa = ({navigation}) => {
-
-  const { adicionarEmpresa } = useSmartContext();
+const FormularioEmpresa = ({ navigation }) => {
 
   const [nomeEmpresa, setNomeEmpresa] = useState("")
   const [descricaoEmpresa, setDescricaoEmpresa] = useState("")
 
-  const handleProntoPress = () => {
-    adicionarEmpresa(nomeEmpresa, descricaoEmpresa);
-    navigation.navigate('ListagemEmpresa');
-  };
+  const [nomeEmpresaErro, setNomeEmpresaErro] = useState("")
+  const [descricaoEmpresaErro, setDescricaoEmpresaErro] = useState("")
 
-  return(
+  const { salvarEmpresa } = useContext(SmartContexto);
+
+  return (
     <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#00284D',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: '#00284D',
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: "100%",
+            height: "100%",
+            padding: 50,
+            marginTop: 30
           }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00284D',
-              justifyContent: 'space-around',
-              width: "100%",
-              height: "100%",
-              padding: 50,
-              marginTop: 30
-            }}>
-
-            
-            <View style={{ flex: 1}}>
-                  <View
-                    style={{
-                      backgroundColor: "#025A90",
-                      padding: 20,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Digite o nome da sua empresa
-                    </Text>
-                  </View>
-                  <TextInput
-                    placeholder="Digite aqui..."
-                    placeholderTextColor="white"
-                    style={{
-                      backgroundColor: "#04192C",
-                      color: "white",
-                      padding: 20,
-                      textAlign: "center",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                    onChangeText={(text) => setNomeEmpresa(text)}
-                    value={nomeEmpresa}
-                  />
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <View
-                    style={{
-                      backgroundColor: "#025A90",
-                      padding: 20,
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 20,
-                        textAlign: "center",
-                        fontWeight: 600,
-                      }}
-                    >
-                      Descreva a sua empresa
-                    </Text>
-                  </View>
-                  <TextInput
-                    placeholder="Digite aqui..."
-                    placeholderTextColor="white"
-                    style={{
-                      backgroundColor: "#04192C",
-                      color: "white",
-                      padding: 20,
-                      textAlign: "center",
-                      borderBottomRightRadius: 10,
-                      borderBottomLeftRadius: 10,
-                    }}
-                    onChangeText={(text) => setDescricaoEmpresa(text)}
-                    value={descricaoEmpresa}
-                  />
-                </View>
-           
 
 
-            <TouchableOpacity
+          <View style={{ flex: 1 }}>
+            <View
               style={{
-                backgroundColor: '#04192C',
-                width: '100%',
-                padding: 15,
-                alignSelf: 'center',
-                borderRadius: 10,
-                marginBottom: 50
+                backgroundColor: "#025A90",
+                padding: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
               }}
-              onPress={handleProntoPress}
-              
-              >
+            >
               <Text
                 style={{
-                  color: 'white',
-                  textAlign: 'center',
-                  fontWeight: 600,
+                  color: "white",
                   fontSize: 20,
-                }}>
-                Pronto!
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                Digite o nome da sua empresa
               </Text>
-            </TouchableOpacity>
+            </View>
+            <TextInput
+              placeholder="Digite aqui..."
+              placeholderTextColor="white"
+              style={{
+                backgroundColor: "#04192C",
+                color: "white",
+                padding: 20,
+                textAlign: "center",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+              onChangeText={(text) => setNomeEmpresa(text)}
+              value={nomeEmpresa}
+            />
           </View>
+
+          <View style={{ flex: 1 }}>
+            <View
+              style={{
+                backgroundColor: "#025A90",
+                padding: 20,
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              }}
+            >
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 20,
+                  textAlign: "center",
+                  fontWeight: 600,
+                }}
+              >
+                Descreva a sua empresa
+              </Text>
+            </View>
+            <TextInput
+              placeholder="Digite aqui..."
+              placeholderTextColor="white"
+              style={{
+                backgroundColor: "#04192C",
+                color: "white",
+                padding: 20,
+                textAlign: "center",
+                borderBottomRightRadius: 10,
+                borderBottomLeftRadius: 10,
+              }}
+              onChangeText={(text) => setDescricaoEmpresa(text)}
+              value={descricaoEmpresa}
+            />
+          </View>
+
+
+
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#04192C',
+              width: '100%',
+              padding: 15,
+              alignSelf: 'center',
+              borderRadius: 10,
+              marginBottom: 50
+            }}
+            onPress={() => {
+              salvarEmpresa({nomeEmpresa, descricaoEmpresa})
+              .then(() => {})
+              .catch((errors) => {
+                errors.inner.forEach(e => {
+                  console.log(e.message, e.path)
+                  if (e.path === "nomeEmpresa") { 
+                    setNomeEmpresaErro(e.message)
+                  } else if (e.path === "descricaoEmpresa") { 
+                    setDescricaoEmpresaErro(e.message)
+                  } 
+                });
+              })
+            }}
+
+          >
+            <Text
+              style={{
+                color: 'white',
+                textAlign: 'center',
+                fontWeight: 600,
+                fontSize: 20,
+              }}>
+              Pronto!
+            </Text>
+          </TouchableOpacity>
         </View>
+      </View>
     </View>
   )
 }
 
-const ListagemProduto = ({navigation}) => {
-  
-  const { produtos, removerProduto } = useSmartContext()
+const ListagemProduto = ({ navigation }) => {
+
+  // const { produtos, removerProduto } = useSmartContext()
+
+  const [estado, deletarProduto] = useContext(SmartContexto)
 
   const editarProduto = (produto) => {
     navigation.navigate('EditarProduto', { produto, onSave: atualizarProduto });
@@ -462,56 +530,58 @@ const ListagemProduto = ({navigation}) => {
   };
 
 
-  return(
+  return (
     <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#00284D',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: '#00284D',
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: "100%",
+            height: "100%",
+            padding: 50,
+            marginTop: 30
           }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00284D',
-              justifyContent: 'space-around',
-              width: "100%",
-              height: "100%",
-              padding: 50,
-              marginTop: 30
-            }}>
-           
-           {produtos.length === 0 ? (
-              <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
-                Não há produtos cadastrados.
-              </Text>
-            ) : (
-              produtos.map((produto, index) => (
-                <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Inputting
-                    texto={`Produto: ${produto.nome}`}
-                    outroTexto={`Descrição: ${produto.descricao}`}
-                  />
-                  <TouchableOpacity onPress={() => removerProduto(index)} style={{ height: "100%" }}>
-                    <Icon name="trash" size={24} color="red" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => editarProduto(produto)}>
-                    <Icon name="pencil" size={24} color="blue" />
-                  </TouchableOpacity>
-                </View>
-              ))
-            )}
 
-          </View>
+          {estado.listaProduto.length === 0 ? (
+            <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
+              Não há produtos cadastrados.
+            </Text>
+          ) : (
+            estado.listaProduto.map((produto, index) => (
+              <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Inputting
+                  texto={`Produto: ${produto.nome}`}
+                  outroTexto={`Descrição: ${produto.descricao}`}
+                />
+                <TouchableOpacity onPress={() => deletarProduto(index)} style={{ height: "100%" }}>
+                  <Icon name="trash" size={24} color="red" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => editarProduto(produto)}>
+                  <Icon name="pencil" size={24} color="blue" />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+
         </View>
+      </View>
     </View>
   )
 }
 
-const ListagemEmpresa = ({navigation}) => {
-  
-  const { empresas, removerEmpresa } = useSmartContext()
+const ListagemEmpresa = ({ navigation }) => {
+
+  // const { empresas, removerEmpresa } = useSmartContext()
+
+  const [estado, deletarEmpresa] = useContext(SmartContexto);
 
   const editarEmpresa = (empresa) => {
     navigation.navigate('EditarEmpresa', { empresa, onSave: atualizarEmpresa });
@@ -529,49 +599,49 @@ const ListagemEmpresa = ({navigation}) => {
   };
 
 
-  return(
+  return (
     <View style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#00284D',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <View
           style={{
             flex: 1,
             backgroundColor: '#00284D',
-            justifyContent: 'center',
-            alignItems: 'center',
+            justifyContent: 'space-around',
+            width: "100%",
+            height: "100%",
+            padding: 50,
+            marginTop: 30
           }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#00284D',
-              justifyContent: 'space-around',
-              width: "100%",
-              height: "100%",
-              padding: 50,
-              marginTop: 30
-            }}>
-           
-           {empresas.length === 0 ? (
-              <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
-                Não há empresas cadastradas.
-              </Text>
-            ) : (
-              empresas.map((empresa, index) => (
-                <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Inputting
-                    texto={`Empresa: ${empresa.nome}`}
-                    outroTexto={`Descrição: ${empresa.descricao}`}
-                  />
-                  <TouchableOpacity onPress={() => removerEmpresa(index)} style={{ height: "100%" }}>
-                    <Icon name="trash" size={24} color="red" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => editarEmpresa(empresa)}>
-                    <Icon name="pencil" size={24} color="blue" />
-                  </TouchableOpacity>
-                </View>
-              ))
-            )}
 
-          </View>
+          {estado.listaEmpresa.length === 0 ? (
+            <Text style={{ textAlign: 'center', fontSize: 18, color: 'white' }}>
+              Não há empresas cadastradas.
+            </Text>
+          ) : (
+            estado.listaEmpresa.map((empresa, index) => (
+              <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Inputting
+                  texto={`Empresa: ${empresa.nome}`}
+                  outroTexto={`Descrição: ${empresa.descricao}`}
+                />
+                <TouchableOpacity onPress={() => deletarEmpresa(index)} style={{ height: "100%" }}>
+                  <Icon name="trash" size={24} color="red" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => editarEmpresa(empresa)}>
+                  <Icon name="pencil" size={24} color="blue" />
+                </TouchableOpacity>
+              </View>
+            ))
+          )}
+
         </View>
+      </View>
     </View>
   )
 }
@@ -659,132 +729,135 @@ const EditarEmpresa = ({ route, navigation }) => {
 
 
 export default function App() {
+
+  const smartControl = useSmartControl();
+
   return (
-    <SmartSellersProvider>
-        <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={{
-                title: 'SmartSellers',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            <Stack.Screen
-              name="FormularioProduto"
-              component={FormularioProduto}
-              options={{
-                title: 'Produto',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            
-            <Stack.Screen
-              name="FormularioEmpresa"
-              component={FormularioEmpresa}
-              options={{
-                title: 'Cadastro',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            <Stack.Screen
-              name="ListagemProduto"
-              component={ListagemProduto}
-              options={{
-                title: 'Produtos',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            <Stack.Screen
-              name="ListagemEmpresa"
-              component={ListagemEmpresa}
-              options={{
-                title: 'Empresas',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            <Stack.Screen
-              name="EditarProduto"
-              component={EditarProduto}
-              options={{
-                title: 'Editar Produto',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-            <Stack.Screen
-              name="EditarEmpresa"
-              component={EditarEmpresa}
-              options={{
-                title: 'Editar Empresa',
-                headerStyle: {
-                  backgroundColor: '#025A90',
-                  height: 150
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                  fontSize: 30,
-                  fontWeight: 700
-                },
-                headerTitleAlign: 'center'
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-        </SmartSellersProvider>
+    <SmartContexto.Provider value={ smartControl }>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{
+              title: 'SmartSellers',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name="FormularioProduto"
+            component={FormularioProduto}
+            options={{
+              title: 'Produto',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+
+          <Stack.Screen
+            name="FormularioEmpresa"
+            component={FormularioEmpresa}
+            options={{
+              title: 'Cadastro',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name="ListagemProduto"
+            component={ListagemProduto}
+            options={{
+              title: 'Produtos',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name="ListagemEmpresa"
+            component={ListagemEmpresa}
+            options={{
+              title: 'Empresas',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name="EditarProduto"
+            component={EditarProduto}
+            options={{
+              title: 'Editar Produto',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+          <Stack.Screen
+            name="EditarEmpresa"
+            component={EditarEmpresa}
+            options={{
+              title: 'Editar Empresa',
+              headerStyle: {
+                backgroundColor: '#025A90',
+                height: 150
+              },
+              headerTintColor: '#fff',
+              headerTitleStyle: {
+                fontSize: 30,
+                fontWeight: 700
+              },
+              headerTitleAlign: 'center'
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SmartContexto.Provider>
   );
 }
