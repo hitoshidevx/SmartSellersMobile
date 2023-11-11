@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const smartAPI = axios.create({
   // Trocar a base para a nossa API em nuvem
-  baseURL: "https://fiap-2023-2tdspg-16bb6-default-rtdb.firebaseio.com/"
+  baseURL: "https://smartsellers.azurewebsites.net/"
 });
 
 // LOGIN
@@ -12,15 +12,15 @@ const logar = () => {
 
 // PARTE DO PRODUTO
 const carregarProdutos = () => { 
-    return smartAPI.get("/agenda.json");
+    return smartAPI.get("/api/produto/1/historico");
 }
 
 const apagarProduto = ( obj ) => { 
-    return smartAPI.delete("/agenda/" + obj.id + ".json")
+    return smartAPI.delete("/api/produto/1/deletar/" + obj.id + ".json")
 }
 
 const cadastrarProduto = ( obj ) => {
-    return smartAPI.post("/agenda.json", obj);
+    return smartAPI.post("/api/produto/1/registrar", obj);
 }
 
 // PARTE DA EMPRESA
