@@ -1,5 +1,5 @@
-import { empresaSchema } from "../model/empresaSchema";
-import { produtoSchema } from "../model/produtoSchema";
+import { empresaSchema } from "../models/empresaSchema";
+import { produtoSchema } from "../models/produtoSchema";
 import { useReducer, useEffect } from 'react';
 import {  cadastrarEmpresa, carregarEmpresas, apagarEmpresa, cadastrarProduto, carregarProdutos, apagarProduto  } from "../fetchers/smartAPI";
 
@@ -85,7 +85,7 @@ const useSmartControl = () => {
     }
 
     const deletarProduto = (obj) => {
-        apagarProduto()
+        apagarProduto(obj)
             .then(() => {
                 listarProduto();
             })

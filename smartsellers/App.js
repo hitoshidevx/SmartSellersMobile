@@ -176,11 +176,9 @@ const Inputting = ({ texto, outroTexto }) => {
 
 const FormularioProduto = ({ navigation }) => {
 
-  const { adicionarProduto } = useSmartContext();
-
   const [nomeProduto, setNomeProduto] = useState("")
   const [descricaoProduto, setDescricaoProduto] = useState("")
-  const [precoProduto, setPrecoProduto] = useState(0)
+  const [precoProduto, setPrecoProduto] = useState("")
 
   const [nomeProdutoErro, setNomeProdutoErro] = useState("")
   const [descricaoProdutoErro, setDescricaoProdutoErro] = useState("")
@@ -329,20 +327,22 @@ const FormularioProduto = ({ navigation }) => {
               marginBottom: 50
             }}
             onPress={() => {
-              salvarProduto({nomeProduto, descricaoProduto, precoProduto})
-              .then(() => {})
-              .catch((errors) => {
-                errors.inner.forEach(e => {
-                  console.log(e.message, e.path)
-                  if (e.path === "nomeProduto") { 
-                    setNomeProdutoErro(e.message)
-                  } else if (e.path === "descricaoProduto") { 
-                    setDescricaoProdutoErro(e.message)
-                  } else if (e.path === "precoProduto") { 
-                    setPrecoProdutoErro(e.message)
-                  } 
-                });
-              })
+              salvarProduto({ nomeProduto, descricaoProduto, precoProduto })
+                .then(() => {
+                  navigation.navigate("ListagemProduto")
+                })
+                .catch((errors) => {
+                  errors.inner.forEach(e => {
+                    console.log(e.message, e.path)
+                    if (e.path === "nomeProduto") {
+                      setNomeProdutoErro(e.message)
+                    } else if (e.path === "descricaoProduto") {
+                      setDescricaoProdutoErro(e.message)
+                    } else if (e.path === "precoProduto") {
+                      setPrecoProdutoErro(e.message)
+                    }
+                  });
+                })
             }}
 
           >
@@ -477,18 +477,20 @@ const FormularioEmpresa = ({ navigation }) => {
               marginBottom: 50
             }}
             onPress={() => {
-              salvarEmpresa({nomeEmpresa, descricaoEmpresa})
-              .then(() => {})
-              .catch((errors) => {
-                errors.inner.forEach(e => {
-                  console.log(e.message, e.path)
-                  if (e.path === "nomeEmpresa") { 
-                    setNomeEmpresaErro(e.message)
-                  } else if (e.path === "descricaoEmpresa") { 
-                    setDescricaoEmpresaErro(e.message)
-                  } 
-                });
-              })
+              salvarEmpresa({ nomeEmpresa, descricaoEmpresa })
+                .then(() => { 
+                  navigation.navigate("ListagemEmpresa");
+                })
+                .catch((errors) => {
+                  errors.inner.forEach(e => {
+                    console.log(e.message, e.path)
+                    if (e.path === "nomeEmpresa") {
+                      setNomeEmpresaErro(e.message)
+                    } else if (e.path === "descricaoEmpresa") {
+                      setDescricaoEmpresaErro(e.message)
+                    }
+                  });
+                })
             }}
 
           >
@@ -512,7 +514,7 @@ const ListagemProduto = ({ navigation }) => {
 
   // const { produtos, removerProduto } = useSmartContext()
 
-  const [estado, deletarProduto] = useContext(SmartContexto)
+  const { estado, deletarProduto } = useContext(SmartContexto);
 
   const editarProduto = (produto) => {
     navigation.navigate('EditarProduto', { produto, onSave: atualizarProduto });
@@ -558,10 +560,10 @@ const ListagemProduto = ({ navigation }) => {
             estado.listaProduto.map((produto, index) => (
               <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Inputting
-                  texto={`Produto: ${produto.nome}`}
-                  outroTexto={`Descrição: ${produto.descricao}`}
+                  texto={`Produto: ${produto.nomeProduto}`}
+                  outroTexto={`Descrição: ${produto.descricaoProduto}`}
                 />
-                <TouchableOpacity onPress={() => deletarProduto(index)} style={{ height: "100%" }}>
+                <TouchableOpacity onPress={() => deletarProduto(produto)} style={{ height: "100%" }}>
                   <Icon name="trash" size={24} color="red" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => editarProduto(produto)}>
@@ -733,7 +735,7 @@ export default function App() {
   const smartControl = useSmartControl();
 
   return (
-    <SmartContexto.Provider value={ smartControl }>
+    <SmartContexto.Provider value={smartControl}>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen

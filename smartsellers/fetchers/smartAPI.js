@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const smartAPI = axios.create({
   // Trocar a base para a nossa API em nuvem
-  baseURL: "https://smartsellers.azurewebsites.net/"
+  baseURL: "https://smartsellers-default-rtdb.firebaseio.com/"
 });
 
 // LOGIN
@@ -12,29 +12,29 @@ const logar = () => {
 
 // PARTE DO PRODUTO
 const carregarProdutos = () => { 
-    return smartAPI.get("/api/produto/1/historico");
+    return smartAPI.get("/produtos.json");
 }
 
 const apagarProduto = ( obj ) => { 
-    return smartAPI.delete("/api/produto/1/deletar/" + obj.id + ".json")
+    return smartAPI.delete("/produtos/" + obj.id + ".json")
 }
 
 const cadastrarProduto = ( obj ) => {
-    return smartAPI.post("/api/produto/1/registrar", obj);
+    return smartAPI.post("/produtos.json", obj);
 }
 
 // PARTE DA EMPRESA
 
 const carregarEmpresas = () => { 
-    return smartAPI.get("/agenda.json");
+    return smartAPI.get("/empresas.json");
 }
 
 const apagarEmpresa = ( obj ) => { 
-    return smartAPI.delete("/agenda/" + obj.id + ".json")
+    return smartAPI.delete("/empresas/" + obj.id + ".json")
 }
 
 const cadastrarEmpresa = ( obj ) => {
-    return smartAPI.post("/agenda.json", obj);
+    return smartAPI.post("/empresas.json", obj);
 }
 
 export { logar, carregarProdutos, apagarProduto, cadastrarProduto, carregarEmpresas, apagarEmpresa, cadastrarEmpresa }
