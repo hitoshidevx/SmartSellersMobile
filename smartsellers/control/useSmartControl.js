@@ -1,7 +1,8 @@
+import { useState } from "react";
 import { empresaSchema } from "../models/empresaSchema";
 import { produtoSchema } from "../models/produtoSchema";
 import { useReducer, useEffect } from 'react';
-import {  cadastrarEmpresa, carregarEmpresas, apagarEmpresa, cadastrarProduto, carregarProdutos, apagarProduto  } from "../fetchers/smartAPI";
+import { cadastrarEmpresa, carregarEmpresas, apagarEmpresa, cadastrarProduto, carregarProdutos, apagarProduto, alterarProduto, alterarEmpresas } from "../fetchers/smartAPI";
 
 const estadoInicial = {
     listaProduto: [],
@@ -24,40 +25,14 @@ const funcaoReducer = (estado, action) => {
 const useSmartControl = () => {
     const [estado, dispatcher] = useReducer(funcaoReducer, estadoInicial);
 
-    const salvarEmpresa = async (obj) => {
-        return empresaSchema.validate(obj, { abortEarly: false })
-            .then(() => {
-                cadastrarEmpresa(obj)
-                    .then(() => {
-                        carregarEmpresas();
-                    })
-            })
-    }
+    const [id, setId] = useState(null)
+    const [nomeProduto, setNomeProduto] = useState("")
+    const [descricaoProduto, setDescricaoProduto] = useState("")
+    const [precoProduto, setPrecoProduto] = useState()
 
-    const listarEmpresa = async () => {
-        carregarEmpresas()
-            .then((resposta) => {
-                dispatcher({ type: "LIST_CLEAR_COMPANY" });
-                for (const chave in resposta.data) {
-                    const obj = resposta.data[chave];
-                    obj.id = chave
-                    dispatcher({ type: "LIST_APPEND_COMPANY", payload: obj });
-                }
-            })
-            .catch((err) => {
-                alert("Erro ao ler: " + err);
-            })
-    }
+    const [nomeEmpresa, setNomeEmpresa] = useState("")
+    const [descricaoEmpresa, setDescricaoEmpresa] = useState("")
 
-    const deletarEmpresa = (obj) => {
-        apagarEmpresa()
-            .then(() => {
-                listarEmpresa();
-            })
-            .catch((err) => {
-                alert("Erro ao apagar")
-            })
-    }
 
     const salvarProduto = async (obj) => {
         return produtoSchema.validate(obj, { abortEarly: false })
@@ -66,7 +41,17 @@ const useSmartControl = () => {
                     .then(() => {
                         carregarProdutos();
                     })
+                    .catch((err) => {
+                        alert("Erro: " + err)
+                    })
             })
+    }
+
+    const changeProduto = (obj) => {
+        setId(obj.id)
+        setNomeProduto(obj.nomeProduto)
+        setDescricaoProduto(obj.descricaoProduto)
+        setPrecoProduto(obj.precoProduto)
     }
 
     const listarProduto = async () => {
@@ -94,22 +79,92 @@ const useSmartControl = () => {
             })
     }
 
+    const editarProduto = async (obj) => {
+        return alterarProduto(obj.id, obj)
+            .then(() => {
+                listarProduto();
+            })
+            .catch((err) => {
+                alert("Erro ao editar");
+            });
+    };
+
+    const salvarEmpresa = async (obj) => {
+        return empresaSchema.validate(obj, { abortEarly: false })
+            .then(() => {
+                cadastrarEmpresa(obj)
+                    .then(() => {
+                        carregarEmpresas();
+                    })
+            })
+    }
+
+    const listarEmpresa = async () => {
+        carregarEmpresas()
+            .then((resposta) => {
+                dispatcher({ type: "LIST_CLEAR_COMPANY" });
+                for (const chave in resposta.data) {
+                    const obj = resposta.data[chave];
+                    obj.id = chave
+                    dispatcher({ type: "LIST_APPEND_COMPANY", payload: obj });
+                }
+            })
+            .catch((err) => {
+                alert("Erro ao ler: " + err);
+            })
+    }
+
+    const deletarEmpresa = (obj) => {
+        apagarEmpresa(obj)
+            .then(() => {
+                listarEmpresa();
+            })
+            .catch((err) => {
+                alert("Erro ao apagar")
+            })
+    }
+
+    const editarEmpresa = async (obj) => {
+        return alterarEmpresas(obj.id, obj)
+            .then(() => {
+                listarEmpresa();
+            })
+            .catch((err) => {
+                alert("Erro ao editar");
+            });
+    };
+
     useEffect(
-        () => { 
-            listarEmpresa();
+        () => {
             listarProduto();
+            listarEmpresa();
         },
         [])
 
     return {
         estado,
         dispatcher,
+        id,
+        setId,
+        nomeProduto,
+        setNomeProduto,
+        descricaoProduto,
+        setDescricaoProduto,
+        precoProduto,
+        setPrecoProduto,
+        nomeEmpresa,
+        setNomeEmpresa,
+        descricaoEmpresa,
+        setDescricaoEmpresa,
+        salvarProduto,
+        listarProduto,
+        deletarProduto,
+        editarProduto,
         salvarEmpresa,
         listarEmpresa,
         deletarEmpresa,
-        salvarProduto,
-        listarProduto,
-        deletarProduto
+        editarEmpresa,
+        changeProduto
     }
 }
 

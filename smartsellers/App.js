@@ -478,7 +478,7 @@ const FormularioEmpresa = ({ navigation }) => {
             }}
             onPress={() => {
               salvarEmpresa({ nomeEmpresa, descricaoEmpresa })
-                .then(() => { 
+                .then(() => {
                   navigation.navigate("ListagemEmpresa");
                 })
                 .catch((errors) => {
@@ -514,23 +514,7 @@ const ListagemProduto = ({ navigation }) => {
 
   // const { produtos, removerProduto } = useSmartContext()
 
-  const { estado, deletarProduto } = useContext(SmartContexto);
-
-  const editarProduto = (produto) => {
-    navigation.navigate('EditarProduto', { produto, onSave: atualizarProduto });
-  };
-
-  // Função para atualizar o produto após a edição
-  const atualizarProduto = (produtoAtualizado) => {
-    const produtosAtualizados = produtos.map((p) => {
-      if (p.id === produtoAtualizado.id) {
-        return produtoAtualizado;
-      }
-      return p;
-    });
-    setProdutos(produtosAtualizados);
-  };
-
+  const { estado, deletarProduto, editarProduto, changeProduto } = useContext(SmartContexto);
 
   return (
     <View style={{ flex: 1 }}>
@@ -566,7 +550,7 @@ const ListagemProduto = ({ navigation }) => {
                 <TouchableOpacity onPress={() => deletarProduto(produto)} style={{ height: "100%" }}>
                   <Icon name="trash" size={24} color="red" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => editarProduto(produto)}>
+                <TouchableOpacity onPress={() => navigation.navigate("EditarProduto", { produto })}>
                   <Icon name="pencil" size={24} color="blue" />
                 </TouchableOpacity>
               </View>
@@ -581,25 +565,9 @@ const ListagemProduto = ({ navigation }) => {
 
 const ListagemEmpresa = ({ navigation }) => {
 
-  // const { empresas, removerEmpresa } = useSmartContext()
+  // const { produtos, removerProduto } = useSmartContext()
 
-  const [estado, deletarEmpresa] = useContext(SmartContexto);
-
-  const editarEmpresa = (empresa) => {
-    navigation.navigate('EditarEmpresa', { empresa, onSave: atualizarEmpresa });
-  };
-
-  // Função para atualizar o produto após a edição
-  const atualizarEmpresa = (empresaAtualizada) => {
-    const empresasAtualizadas = empresas.map((e) => {
-      if (e.id === empresaAtualizada.id) {
-        return empresaAtualizada;
-      }
-      return e;
-    });
-    setEmpresas(empresasAtualizadas);
-  };
-
+  const { estado, deletarEmpresa } = useContext(SmartContexto);
 
   return (
     <View style={{ flex: 1 }}>
@@ -629,13 +597,13 @@ const ListagemEmpresa = ({ navigation }) => {
             estado.listaEmpresa.map((empresa, index) => (
               <View key={index} style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Inputting
-                  texto={`Empresa: ${empresa.nome}`}
-                  outroTexto={`Descrição: ${empresa.descricao}`}
+                  texto={`Empresa: ${empresa.nomeEmpresa}`}
+                  outroTexto={`Descrição: ${empresa.descricaoEmpresa}`}
                 />
-                <TouchableOpacity onPress={() => deletarEmpresa(index)} style={{ height: "100%" }}>
+                <TouchableOpacity onPress={() => deletarEmpresa(empresa)} style={{ height: "100%" }}>
                   <Icon name="trash" size={24} color="red" />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => editarEmpresa(empresa)}>
+                <TouchableOpacity onPress={() => navigation.navigate("EditarEmpresa", { empresa })}>
                   <Icon name="pencil" size={24} color="blue" />
                 </TouchableOpacity>
               </View>
@@ -650,37 +618,52 @@ const ListagemEmpresa = ({ navigation }) => {
 
 const EditarProduto = ({ route, navigation }) => {
 
-  const { produto, onSave } = route.params;
-  const { atualizarProduto } = useSmartContext();
-  const [novoNome, setNovoNome] = useState(produto.nome);
-  const [novaDescricao, setNovaDescricao] = useState(produto.descricao);
+  const { produto } = route.params || {};
 
-  const handleSalvarPress = () => {
-    const produtoAtualizado = { ...produto, nome: novoNome, descricao: novaDescricao };
-    atualizarProduto(produtoAtualizado);
-    navigation.navigate('ListagemProduto'); // Volta para a lista após salvar
-  };
+  const { editarProduto } = useContext(SmartContexto)
+
+  const [novoNome, setNovoNome] = useState(produto.nomeProduto);
+  const [novaDescricao, setNovaDescricao] = useState(produto.descricaoProduto);
+  const [novoPreco, setNovoPreco] = useState(produto.precoProduto)
 
   return (
     <View style={{ flex: 1, backgroundColor: '#00284D', padding: 20 }}>
       <Text style={{ color: 'white', fontSize: 20, marginBottom: 10 }}>Editar Produto</Text>
       <TextInput
-        placeholder="Nome do Produto"
+        placeholder="Novo Nome do Produto"
         placeholderTextColor="white"
         style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 10 }}
         onChangeText={(text) => setNovoNome(text)}
         value={novoNome}
       />
       <TextInput
-        placeholder="Descrição do Produto"
+        placeholder="Nova Descrição do Produto"
         placeholderTextColor="white"
         style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 20 }}
         onChangeText={(text) => setNovaDescricao(text)}
         value={novaDescricao}
       />
+
+      <TextInput
+        placeholder="Novo Preço do Produto"
+        placeholderTextColor="white"
+        style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 20 }}
+        onChangeText={(text) => setNovoPreco(text)}
+        value={novoPreco}
+      />
       <TouchableOpacity
         style={{ backgroundColor: '#04192C', padding: 15, borderRadius: 10 }}
-        onPress={handleSalvarPress}
+        onPress={() => {
+          editarProduto({
+            id: produto.id,
+            nomeProduto: novoNome,
+            descricaoProduto: novaDescricao,
+            precoProduto: novoPreco,
+          })
+          .then(() => {
+            navigation.navigate("ListagemProduto");
+          })
+        }}
       >
         <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Pronto</Text>
       </TouchableOpacity>
@@ -690,37 +673,43 @@ const EditarProduto = ({ route, navigation }) => {
 
 const EditarEmpresa = ({ route, navigation }) => {
 
-  const { empresa, onSave } = route.params;
-  const { atualizarEmpresa } = useSmartContext();
-  const [novoNome, setNovoNome] = useState(empresa.nome);
-  const [novaDescricao, setNovaDescricao] = useState(empresa.descricao);
+  const { empresa } = route.params || {};
 
-  const handleSalvarPress = () => {
-    const empresaAtualizada = { ...empresa, nome: novoNome, descricao: novaDescricao };
-    atualizarEmpresa(empresaAtualizada);
-    navigation.navigate('ListagemEmpresa'); // Volta para a lista após salvar
-  };
+  const { editarEmpresa } = useContext(SmartContexto)
+
+  const [novoNome, setNovoNome] = useState(empresa.nomeEmpresa);
+  const [novaDescricao, setNovaDescricao] = useState(empresa.descricaoEmpresa);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#00284D', padding: 20 }}>
-      <Text style={{ color: 'white', fontSize: 20, marginBottom: 10 }}>Editar Empresa</Text>
+      <Text style={{ color: 'white', fontSize: 20, marginBottom: 10 }}>Editar Produto</Text>
       <TextInput
-        placeholder="Nome da Empresa"
+        placeholder="Novo Nome do Produto"
         placeholderTextColor="white"
         style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 10 }}
         onChangeText={(text) => setNovoNome(text)}
         value={novoNome}
       />
       <TextInput
-        placeholder="Descrição da Empresa"
+        placeholder="Nova Descrição do Produto"
         placeholderTextColor="white"
         style={{ backgroundColor: '#04192C', color: 'white', padding: 15, borderRadius: 10, marginBottom: 20 }}
         onChangeText={(text) => setNovaDescricao(text)}
         value={novaDescricao}
       />
+
       <TouchableOpacity
         style={{ backgroundColor: '#04192C', padding: 15, borderRadius: 10 }}
-        onPress={handleSalvarPress}
+        onPress={() => {
+          editarEmpresa({
+            id: empresa.id,
+            nomeEmpresa: novoNome,
+            descricaoEmpresa: novaDescricao
+          })
+          .then(() => {
+            navigation.navigate("ListagemEmpresa");
+          })
+        }}
       >
         <Text style={{ color: 'white', fontSize: 18, textAlign: 'center' }}>Pronto</Text>
       </TouchableOpacity>

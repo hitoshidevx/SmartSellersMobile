@@ -2,13 +2,16 @@ import { createContext } from "react"
 
 const smartContextoInicial = { 
     estado : {},
-    salvarEmpresa : ( obj ) => {},
     dispatcher : ( action ) => {},
+    salvarEmpresa : ( obj ) => {},
     salvarProduto : ( obj ) => {},
     listarEmpresa : () => {},
     listarProduto : () => {},
     deletarEmpresa : ( obj ) => {},
     deletarProduto : ( obj ) => {},
+    editarProduto : ( obj ) => {},
+    editarEmpresa : ( obj ) => {}
+
 }
 
 const SmartContexto = createContext(smartContextoInicial);

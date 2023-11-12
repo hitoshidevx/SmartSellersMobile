@@ -23,6 +23,10 @@ const cadastrarProduto = ( obj ) => {
     return smartAPI.post("/produtos.json", obj);
 }
 
+const alterarProduto = (id, obj) => {
+    return smartAPI.put(`/produtos/${id}.json`, obj);
+  };
+
 // PARTE DA EMPRESA
 
 const carregarEmpresas = () => { 
@@ -37,4 +41,8 @@ const cadastrarEmpresa = ( obj ) => {
     return smartAPI.post("/empresas.json", obj);
 }
 
-export { logar, carregarProdutos, apagarProduto, cadastrarProduto, carregarEmpresas, apagarEmpresa, cadastrarEmpresa }
+const alterarEmpresas = (id, obj) => {
+    return smartAPI.put(`/empresas/${id}.json`, obj);
+  };
+
+export { logar, carregarProdutos, apagarProduto, cadastrarProduto, alterarProduto, carregarEmpresas, apagarEmpresa, cadastrarEmpresa, alterarEmpresas }
