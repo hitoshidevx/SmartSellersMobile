@@ -111,12 +111,30 @@ const Home = ({ navigation }) => {
               Cadastrar Empresa
             </Text>
           </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={estilos.botao}
+            onPress={() => navigation.navigate('ListagemProduto')}>
+            <Text
+              style={estilos.textoBotao}>
+              Lista de Produtos
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={estilos.botao}
+            onPress={() => navigation.navigate('ListagemEmpresa')}>
+            <Text
+              style={estilos.textoBotao}>
+              Lista de Empresas
+            </Text>
+          </TouchableOpacity>
         </ImageBackground>
       </View>
 
       <View
         style={{
-          flex: 4,
+          flex: 3,
           backgroundColor: '#025A90',
           height: 442,
           alignItems: 'center',
