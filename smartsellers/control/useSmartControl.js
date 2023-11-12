@@ -39,7 +39,7 @@ const useSmartControl = () => {
             .then(() => {
                 cadastrarProduto(obj)
                     .then(() => {
-                        carregarProdutos();
+                        listarProduto();
                     })
                     .catch((err) => {
                         alert("Erro: " + err)
